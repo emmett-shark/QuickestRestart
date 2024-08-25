@@ -1,3 +1,4 @@
+using System;
 using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
@@ -27,12 +28,12 @@ public class Plugin : BaseUnityPlugin
         public static void Postfix(GameController __instance)
         {
             if (__instance.retrying || actuallyQuitting) return;
-            if (Input.GetKey(RestartKey.Value))
+            if (Input.GetKey(RestartKey.Value) && !IsConnectedToMultiplayer())
             {
                 __instance.quitting = true; // __instance.quitting means paused :skull:
                 __instance.pauseRetryLevel();
             }
-            else if (Input.GetKey(QuitKey.Value))
+            else if (Input.GetKey(QuitKey.Value) && !IsConnectedToMultiplayer())
             {
                 __instance.quitting = true;
                 __instance.pauseQuitLevel();
@@ -50,5 +51,10 @@ public class Plugin : BaseUnityPlugin
     public static class GameControllerPauseQuitLevelPatches
     {
         public static void Prefix() => actuallyQuitting = true;
+    }
+    public static bool IsConnectedToMultiplayer()
+    {
+        Type multiplayerManager = Type.GetType("TootTallyMultiplayer.MultiplayerManager, TootTallyMultiplayer");
+        return multiplayerManager != null && (bool)multiplayerManager.GetProperty("IsConnectedToMultiplayer").GetValue(multiplayerManager, null);
     }
 }

@@ -1,7 +1,7 @@
 {
     "name": "QuickestRestart",
     "description": "One button restart or quit. R or Q by default.",
-    "version_number": "1.0.0",
+    "version_number": "1.0.1",
     "dependencies": [
       "BepInEx-BepInExPack_TromboneChamp-5.4.21"
     ],
